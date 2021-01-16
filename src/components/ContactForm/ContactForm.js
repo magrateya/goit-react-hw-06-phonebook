@@ -1,9 +1,13 @@
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import s from './ContactForm.module.css';
 import actions from '../../redux/actions';
 
-function ContactForm({ contacts, onSubmit }) {
+export default function ContactForm() {
+  const contacts = useSelector(state => state.contacts.items);
+  const dispatch = useDispatch();
+
   const { register, handleSubmit, errors, reset } = useForm();
 
   const onHandleSubmit = (data, e) => {
@@ -15,7 +19,8 @@ function ContactForm({ contacts, onSubmit }) {
       alert(`${data.name} is already in contacts`);
       return;
     }
-    onSubmit(data.name, data.number);
+    dispatch(actions.addContact(data.name, data.number));
+    // onSubmit(data.name, data.number);
     reset({ name: '', number: '' });
   };
 
@@ -62,10 +67,11 @@ function ContactForm({ contacts, onSubmit }) {
   );
 }
 
-const mapStatetoProps = ({ contacts: { items, filter } }) => ({
-  contacts: items,
-});
-const mapDispatchToProps = dispatch => ({
-  onSubmit: (name, number) => dispatch(actions.addContact(name, number)),
-});
-export default connect(mapStatetoProps, mapDispatchToProps)(ContactForm);
+// step_1
+// const mapStatetoProps = ({ contacts: { items, filter } }) => ({
+//   contacts: items,
+// });
+// const mapDispatchToProps = dispatch => ({
+//   onSubmit: (name, number) => dispatch(actions.addContact(name, number)),
+// });
+// export default connect(mapStatetoProps, mapDispatchToProps)(ContactForm);
