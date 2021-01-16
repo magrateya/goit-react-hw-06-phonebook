@@ -1,41 +1,23 @@
-// import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import s from './ContactForm.module.css';
+import actions from '../../redux/actions';
 
-export default function ContactForm({ onSubmit }) {
-  // const [name, setName] = useState('');
-  // const [number, setNumber] = useState('');
-
+function ContactForm({ contacts, onSubmit }) {
   const { register, handleSubmit, errors, reset } = useForm();
 
-  // const handleInputChange = e => {
-  //   const { name, value } = e.target;
-  //   switch (name) {
-  //     case 'name':
-  //       setName(value);
-  //       break;
-  //     case 'number':
-  //       setNumber(value);
-  //       break;
-  //     default:
-  //       return;
-  //   }
-  // };
-
   const onHandleSubmit = (data, e) => {
-    // e.preventDefault();
-
-    // onSubmit({ name, number });
+    if (
+      contacts.find(
+        contact => contact.name.toLowerCase() === data.name.toLowerCase(),
+      )
+    ) {
+      alert(`${data.name} is already in contacts`);
+      return;
+    }
     onSubmit(data.name, data.number);
     reset({ name: '', number: '' });
-
-    // reset();
   };
-
-  // const reset = () => {
-  //   setName('');
-  //   setNumber('');
-  // };
 
   return (
     <form onSubmit={handleSubmit(onHandleSubmit)}>
@@ -45,8 +27,6 @@ export default function ContactForm({ onSubmit }) {
           ref={register({ required: true, maxLength: 20, minLength: 2 })}
           type="text"
           name="name"
-          // value={name}
-          // onChange={handleInputChange}
         />
         {errors.name?.type === 'required' && (
           <span style={{ color: 'red' }}>'Your input is required'</span>
@@ -64,8 +44,6 @@ export default function ContactForm({ onSubmit }) {
           ref={register({ required: true, maxLength: 20, minLength: 7 })}
           type="text"
           name="number"
-          // value={number}
-          // onChange={handleInputChange}
         />
         {errors.number?.type === 'required' && (
           <span style={{ color: 'red' }}>'Your input is required'</span>
@@ -83,3 +61,11 @@ export default function ContactForm({ onSubmit }) {
     </form>
   );
 }
+
+const mapStatetoProps = ({ contacts: { items, filter } }) => ({
+  contacts: items,
+});
+const mapDispatchToProps = dispatch => ({
+  onSubmit: (name, number) => dispatch(actions.addContact(name, number)),
+});
+export default connect(mapStatetoProps, mapDispatchToProps)(ContactForm);
