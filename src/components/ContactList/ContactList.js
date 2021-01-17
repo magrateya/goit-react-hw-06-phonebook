@@ -4,19 +4,10 @@ import PropTypes from 'prop-types';
 import ContactItem from './ContactItem';
 import s from './ContactList.module.css';
 import actions from '../../redux/actions';
+import { getVisibleContacts } from '../../redux/selectors';
 
 export default function ContactList() {
-  const getVisibleContacts = (contacts, filter) => {
-    const normalizedFilter = filter.toLowerCase();
-
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter),
-    );
-  };
-
-  const contacts = useSelector(({ contacts: { items, filter } }) =>
-    getVisibleContacts(items, filter),
-  );
+  const contacts = useSelector(getVisibleContacts);
   const dispatch = useDispatch();
 
   return (

@@ -3,9 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import s from './ContactForm.module.css';
 import actions from '../../redux/actions';
+import { getItems } from '../../redux/selectors';
 
 export default function ContactForm() {
-  const contacts = useSelector(state => state.contacts.items);
+  const contacts = useSelector(getItems);
   const dispatch = useDispatch();
 
   const { register, handleSubmit, errors, reset } = useForm();
